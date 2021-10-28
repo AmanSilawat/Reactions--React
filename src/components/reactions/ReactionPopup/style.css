@@ -1,0 +1,49 @@
+.hoverOnEmoji {
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
+}
+
+.reactionPopup {
+  position: absolute;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  left: 50%;
+  height: 32px;
+  bottom: calc(100% + 5px);
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  -webkit-box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.03);
+          box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.03);
+  border-radius: 24px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 0 8px;
+}
+
+.reactionPopup .reactionItem {
+  position: relative;
+  padding: 0 8px;
+}
+
+.reactionPopup .reactionItem span {
+  -webkit-transform: scale(1);
+          transform: scale(1);
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  -webkit-transform-origin: bottom;
+          transform-origin: bottom;
+  display: block;
+}
+
+.reactionPopup .reactionItem:hover span {
+  -webkit-transform: scale(2);
+          transform: scale(2);
+}
+/*# sourceMappingURL=style.css.map */

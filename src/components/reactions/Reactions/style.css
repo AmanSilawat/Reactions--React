@@ -1,0 +1,40 @@
+.reactionWrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.btnSty {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 2px 8px;
+  height: 32px;
+  padding: 8px;
+  background: #f4f4f4;
+  border: 1px solid #ffffff;
+  border-radius: 100px;
+  margin-right: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.btnSty.liked {
+  background: #edf5ff;
+  border: 1px solid #0f62fe;
+}
+
+.dotSeparator {
+  margin: 0px 3px;
+  line-height: 4px;
+  height: 10px;
+}
+
+.emoji {
+  font-size: 0.7rem;
+}
+/*# sourceMappingURL=style.css.map */

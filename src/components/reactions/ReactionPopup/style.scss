@@ -1,0 +1,36 @@
+.hoverOnEmoji {
+	transform: scale(1.1);
+}
+
+.reactionPopup {
+	position: absolute;
+	transform: translateX(-50%);
+	left: 50%;
+	height: 32px;
+	bottom: calc(100% + 5px);
+
+	background: #ffffff;
+
+	border: 1px solid #e0e0e0;
+	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.03);
+	border-radius: 24px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0 8px;
+
+	.reactionItem {
+		position: relative;
+		padding: 0 8px;
+
+		span {
+			transform: scale(1);
+			transition: all 0.3s;
+			transform-origin: bottom;
+			display: block;
+		}
+	}
+}
+.reactionPopup .reactionItem:hover span {
+	transform: scale(2);
+}
