@@ -68,3 +68,9 @@ export const deleteUserContentReactions = ({
         });
 }
 
+export const immediateRemoveUserContentReactions = ({ userContentReactionId }) => dispatch => {
+    dispatch({
+        type: DELETE_USER_CON_REACTION,
+        payload: { userContentReactionId }
+    });
+}

@@ -7,48 +7,88 @@ import ReactionContent from '../ReactionContent';
 
 
 import './style.css';
-import { addUserContentReactions, deleteUserContentReactions } from '../../../redux/actions';
+import { addUserContentReactions, deleteUserContentReactions, immediateRemoveUserContentReactions } from '../../../redux/actions';
 
 const Reactions = ({ contentId }) => {
-    // const state = useSelector(state => state);
     const { error, loading, items: userContentReactions } = useSelector(state => state.userContentReactions);
     const { error: errorReactions, items: reactions } = useSelector(state => state.reactions);
 
     const { id: userId } = useSelector(state => state.currentUser);
-
     const dispatch = useDispatch();
 
-    const handleDeleteReaction = useCallback((userContentReactionId) => {
-        dispatch(deleteUserContentReactions({ userContentReactionId }));
-    }, [dispatch]);
+    // add and remove reactions
+    const handleAddRemoveReaction = useCallback(({ reactionId, userLikedObj }) => {
 
-    const handleAddReaction = useCallback(({ user_id, reaction_id, content_id }) => {
-        dispatch(addUserContentReactions({ user_id, reaction_id, content_id }))
-    }, [dispatch]);
+        if (typeof userLikedObj === 'undefined') {
+
+            // add reaction
+            dispatch(addUserContentReactions({
+                user_id: userId,
+                reaction_id: reactionId,
+                content_id: contentId
+            }));
+
+        } else {
+
+            // remove reaction
+            dispatch(deleteUserContentReactions({ userContentReactionId: userLikedObj.id }));
+
+        }
+
+    }, [contentId, userId, dispatch])
+
+
+    // immediately react on emoji reactions
+    const handleReaction = useCallback(({ userLikedObj, timer, isLiked, reactionId, setIsLiked, emojiCount, setEmojiCount, contentId }) => {
+
+        const originalState = userLikedObj ? true : false;
+
+        // if current state equal is same then fetch
+        if (originalState === isLiked) {
+
+            timer.current = setTimeout(() => {
+                handleAddRemoveReaction({ reactionId, userLikedObj });
+            }, 800);
+
+        } else {
+
+            clearTimeout(timer.current);
+            timer.current = null;
+
+        }
+
+        const nextEmojiCountValue = emojiCount + (isLiked ? -1 : 1);
+
+        if (nextEmojiCountValue === 0) {
+            dispatch(immediateRemoveUserContentReactions({ userContentReactionId: userLikedObj.id }))
+        } else {
+            setEmojiCount(nextEmojiCountValue);
+            setIsLiked(!isLiked);
+        }
+
+    }, [handleAddRemoveReaction, dispatch]);
+
 
     const reactionsGrp = useMemo(() => {
+
         const filterDataGrp = userContentReactions.filter(item => item.content_id === contentId);
 
         return filterDataGrp.reduce((acc, item) => {
+
             if (item.reaction_id in acc) {
                 acc[item.reaction_id].push(item);
             }
+
             else {
                 acc[item.reaction_id] = [item];
             }
+
             return acc;
+
         }, {});
 
     }, [userContentReactions, contentId]);
 
-    const reactionsFiltered = useMemo(() => {
-        return reactions.filter(item => {
-            if (typeof reactionsGrp[item.id] === 'undefined') {
-                return true;
-            }
-            return !reactionsGrp[item.id].some(item => item.user_id === userId)
-        })
-    }, [reactions, userId, reactionsGrp]);
 
     if (error) {
         return <div>Error! {error.message}</div>;
@@ -73,20 +113,19 @@ const Reactions = ({ contentId }) => {
                         reactionId={key}
                         emoji={reactions[key - 1].emoji}
                         emojiName={reactions[key - 1].name}
-                        emojiCount={reactionsGrp[key].length}
-                        handleDeleteReaction={handleDeleteReaction}
-                        handleAddReaction={handleAddReaction}
+                        totEmoji={reactionsGrp[key].length}
+                        handleReaction={handleReaction}
                         userId={userId}
                     />
                 })
             }
 
-            {
-                reactionsFiltered.length !== 0 && <ReactionTrigger
-                    contentId={contentId}
-                    reactionsFiltered={reactionsFiltered}
-                />
-            }
+            <ReactionTrigger
+                contentId={contentId}
+                userId={userId}
+                reactionsGrp={reactionsGrp}
+                handleAddRemoveReaction={handleAddRemoveReaction}
+            />
         </div>
     )
 }

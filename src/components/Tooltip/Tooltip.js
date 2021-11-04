@@ -11,7 +11,7 @@ const Tooltip = ({ title, direction, distance }) => {
 
             default: return { left: `calc(100 % + ${distance}px)` }
         }
-    }, [])
+    }, [direction, distance])
 
     return (
         <div style={style} className={`tooltip ${direction}`} > {title}</ div>

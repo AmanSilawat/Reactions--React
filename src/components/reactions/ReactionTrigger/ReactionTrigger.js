@@ -5,7 +5,12 @@ import ReactionPopup from '../ReactionPopup/ReactionPopup';
 
 import './style.css';
 
-const ReactionTrigger = ({ contentId, reactionsFiltered }) => {
+const ReactionTrigger = ({
+    contentId,
+    handleAddRemoveReaction,
+    reactionsGrp
+}) => {
+
     const [isReactionTrigger, setIsReactionTrigger] = useState(false);
 
     const handleEmojiModal = (bool) => {
@@ -20,7 +25,8 @@ const ReactionTrigger = ({ contentId, reactionsFiltered }) => {
             {isReactionTrigger && <ReactionPopup
                 handleEmojiModal={handleEmojiModal}
                 contentId={contentId}
-                reactionsFiltered={reactionsFiltered}
+                reactionsGrp={reactionsGrp}
+                handleAddRemoveReaction={handleAddRemoveReaction}
             />}
             <img src={svg} alt="smile_trigger" />
         </button>

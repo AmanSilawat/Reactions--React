@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-import { addUserContentReactions } from '../../../redux/actions';
 import Tooltip from '../../Tooltip/Tooltip';
 
 import './style.css'
@@ -10,22 +9,22 @@ const ReactionPopupItem = ({
     reactionId,
     emoji,
     emojiName,
-    handleReactionsAdd,
-    contentId,
-    userId
+    userId,
+    reactionGrp,
+    handleAddRemoveReaction,
 }) => {
-    const [isHover, setIsHover] = useState(false)
+    const [isHover, setIsHover] = useState(false);
+
+    const userLikedObj = useMemo(() => {
+        return reactionGrp.find(item => userId === item.user_id);
+    }, [reactionGrp, userId]);
 
     return (
         <div
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
             className={`reactionItem ${isHover ? 'hoverOnEmoji' : ''}`}
-            onClick={() => handleReactionsAdd({
-                user_id: userId,
-                reaction_id: reactionId,
-                content_id: contentId
-            })}
+            onClick={() => handleAddRemoveReaction({ reactionId, userLikedObj })}
         >
             <span>{emoji}</span>
             {isHover && <Tooltip title={emojiName} direction="top" distance={20} />}
@@ -37,14 +36,11 @@ const ReactionPopupItem = ({
 const ReactionPopup = ({
     handleEmojiModal,
     contentId,
-    reactionsFiltered
+    reactionsGrp,
+    handleAddRemoveReaction
 }) => {
     const { id: userId } = useSelector(state => state.currentUser);
-    const dispatch = useDispatch();
-
-    const handleReactionsAdd = useCallback(({ user_id, reaction_id, content_id }) => {
-        dispatch(addUserContentReactions({ user_id, reaction_id, content_id }))
-    }, [dispatch]);
+    const { items: reactions } = useSelector(state => state.reactions);
 
     useEffect(() => {
         document.addEventListener('click', () => handleEmojiModal(false))
@@ -53,19 +49,23 @@ const ReactionPopup = ({
 
     return (
         <div className="reactionPopup">
-            {reactionsFiltered?.map((item, itemIndex) => (
-                <React.Fragment key={item.id}>
-                    <ReactionPopupItem
-                        itemIndex={itemIndex}
-                        reactionId={item.id}
-                        emojiName={item.name}
-                        emoji={item.emoji}
-                        userId={userId}
-                        contentId={contentId}
-                        handleReactionsAdd={handleReactionsAdd}
-                    />
-                </React.Fragment>
-            ))}
+            {reactions?.map((item, itemIndex) => {
+                return (
+                    <React.Fragment key={item.id}>
+                        <ReactionPopupItem
+                            itemIndex={itemIndex}
+                            reactionId={item.id}
+                            emojiName={item.name}
+                            emoji={item.emoji}
+                            userId={userId}
+                            contentId={contentId}
+                            handleAddRemoveReaction={handleAddRemoveReaction}
+                            reactionGrp={reactionsGrp[item?.id] || []}
+                        />
+                    </React.Fragment>
+                )
+            }
+            )}
         </div>
     )
 }

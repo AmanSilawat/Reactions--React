@@ -21,6 +21,10 @@
   font-size: 0.8rem;
   cursor: pointer;
   position: relative;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 .btnSty.liked {
@@ -30,8 +34,10 @@
 
 .dotSeparator {
   margin: 0px 3px;
-  line-height: 4px;
-  height: 10px;
+  width: 1.5px;
+  height: 1.5px;
+  border-radius: 50%;
+  background: #000;
 }
 
 .emoji {
